@@ -27,7 +27,7 @@ DOWNLOAD_FOLDER = "downloaded_files"
 
 # Load documents from a folder path in smaller batches
 def load_documents_in_batches(folder_path, batch_size=10):
-    loader = DirectoryLoader(folder_path, glob="**/*.py", loader_cls=TextLoader)
+    loader = DirectoryLoader(folder_path, glob="**/**", loader_cls=TextLoader)
     all_documents = loader.load()
     batches = [all_documents[i:i + batch_size] for i in range(0, len(all_documents), batch_size)]
     return batches
