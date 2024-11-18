@@ -15,13 +15,15 @@ You can try out the app directly on the following link:
 
 [GitChat Demo](https://gitchats.streamlit.app)
 
+![image](https://github.com/user-attachments/assets/fbba0ab5-69cf-4933-9ac4-447e669343e2)
+
 ## Installation
 
 To run this application locally, follow these steps:
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/your-username/gitchat.git
+    git clone https://github.com/rugvedp/gitchat.git
     cd gitchat
     ```
 
