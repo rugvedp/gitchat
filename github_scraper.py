@@ -1,10 +1,6 @@
 import os
 import requests
 import shutil
-from dotenv import load_dotenv
-
-# Load environment variables from the .env file
-load_dotenv()
 
 # Function to download file content
 def download_file(file_url, local_path, github_token=None):
@@ -58,7 +54,7 @@ def fetch_contents(url, folder_path, github_token=None):
         print(f"Error accessing {url} - HTTP {response.status_code}: {response.text}")
 
 # Main function to scrape GitHub repository
-def scrape_github_repo(repo_url, download_folder, github_token=None):
+def scrape_github_repo(repo_url, download_folder, github_token):
     """
     Scrape all coding files from a GitHub repository using the GitHub API.
     
@@ -73,11 +69,11 @@ def scrape_github_repo(repo_url, download_folder, github_token=None):
     if os.path.exists(download_folder):
         shutil.rmtree(download_folder)  # Clear old files
     os.makedirs(download_folder, exist_ok=True)
-    github = os.getenv('GITHUB')
+
     # Extract repo name from URL
     repo_name = repo_url.split("github.com/")[-1].strip("/")
     repo_api_url = f"https://api.github.com/repos/{repo_name}/contents"
 
     print(f"Starting to scrape repository: {repo_url}")
-    fetch_contents(repo_api_url, download_folder, github)
+    fetch_contents(repo_api_url, download_folder, github_token)
     return f"Files from {repo_url} downloaded successfully to {download_folder}!"
