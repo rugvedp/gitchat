@@ -73,7 +73,7 @@ def scrape_github_repo(repo_url, download_folder, github_token=None):
     if os.path.exists(download_folder):
         shutil.rmtree(download_folder)  # Clear old files
     os.makedirs(download_folder, exist_ok=True)
-    github = os.getenv('GITHUB_TOKEN')
+    github = os.getenv('GITHUB')
     # Extract repo name from URL
     repo_name = repo_url.split("github.com/")[-1].strip("/")
     repo_api_url = f"https://api.github.com/repos/{repo_name}/contents"
