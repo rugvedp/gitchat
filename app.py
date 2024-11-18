@@ -11,6 +11,7 @@ from github_scraper import scrape_github_repo
 gemini = st.secrets["GEMINI_API_KEY"]
 groq = st.secrets["GROQ_API_KEY"]
 github = st.secrets["GITHUB"]
+
 # LLM configuration
 llm = ChatGroq(
     model="llama3-70b-8192",
@@ -24,29 +25,29 @@ llm = ChatGroq(
 # Folder to store downloaded files
 DOWNLOAD_FOLDER = "downloaded_files"
 
-
-def load_documents(folder_path):
+# Load documents from a folder path in smaller batches
+def load_documents_in_batches(folder_path, batch_size=10):
     loader = DirectoryLoader(folder_path, glob="**/*.py", loader_cls=TextLoader)
-    documents = loader.load()
-    return documents
+    all_documents = loader.load()
+    batches = [all_documents[i:i + batch_size] for i in range(0, len(all_documents), batch_size)]
+    return batches
 
-
+# Split documents into chunks
 def split_documents(documents):
     splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     return splitter.split_documents(documents)
 
-
+# Create the vector store from documents
 def create_vector_store(documents):
     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=gemini)
     vector_store = FAISS.from_documents(documents, embedding=embeddings)
     return vector_store
 
-
+# Setup QA chain using vector store
 def setup_qa_chain(vector_store):
     retriever = vector_store.as_retriever()
     qa_chain = RetrievalQA.from_chain_type(llm=llm, retriever=retriever, return_source_documents=True)
     return qa_chain
-
 
 # Streamlit UI
 st.set_page_config(layout="wide")  # Set the page layout to wide for a more spacious interface
@@ -69,12 +70,21 @@ with st.sidebar:
 
             with st.spinner("Loading and processing documents..."):
                 try:
-                    documents = load_documents(DOWNLOAD_FOLDER)
-                    chunks = split_documents(documents)
-                    vector_store = create_vector_store(chunks)
+                    # Load documents in batches
+                    document_batches = load_documents_in_batches(DOWNLOAD_FOLDER, batch_size=10)
+                    all_chunks = []
+
+                    # Process each batch incrementally
+                    for batch in document_batches:
+                        chunks = split_documents(batch)
+                        all_chunks.extend(chunks)
+                    
+                    # Create the vector store from chunks
+                    vector_store = create_vector_store(all_chunks)
                     qa_chain = setup_qa_chain(vector_store)
                     st.session_state["qa_chain"] = qa_chain
                     st.success("Chatbot is ready!")
+
                 except Exception as e:
                     st.error(f"Error processing documents: {e}")
 
