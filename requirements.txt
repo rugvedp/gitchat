@@ -1,0 +1,11 @@
+langchain-google-genai
+google.generativeai
+faiss-cpu
+langchain
+tiktoken
+beautifulsoup4
+langchain
+streamlit
+groq
+langchain-community
+langchain-groq
