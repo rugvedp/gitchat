@@ -1,4 +1,3 @@
-import os
 import streamlit as st
 from langchain.document_loaders import DirectoryLoader, TextLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -8,14 +7,10 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_groq import ChatGroq
 from github_scraper import scrape_github_repo
 
-from dotenv import load_dotenv
-
-# Load environment variables from the .env file
-load_dotenv()
-
-gemini = os.getenv('GEMINI_API_KEY')
-groq = os.getenv('GROQ_API_KEY')
-
+# Access API keys from Streamlit secrets
+gemini = st.secrets["GEMINI_API_KEY"]
+groq = st.secrets["GROQ_API_KEY"]
+github = st.secrets["GITHUB"]
 # LLM configuration
 llm = ChatGroq(
     model="llama3-70b-8192",
@@ -42,7 +37,7 @@ def split_documents(documents):
 
 
 def create_vector_store(documents):
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001",google_api_key=gemini)
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=gemini)
     vector_store = FAISS.from_documents(documents, embedding=embeddings)
     return vector_store
 
@@ -67,7 +62,7 @@ with st.sidebar:
         else:
             with st.spinner("Scraping repository..."):
                 try:
-                    message = scrape_github_repo(repo_url, DOWNLOAD_FOLDER, None)
+                    message = scrape_github_repo(repo_url, DOWNLOAD_FOLDER, github)
                     st.success(message)
                 except Exception as e:
                     st.error(f"Error scraping repository: {e}")
