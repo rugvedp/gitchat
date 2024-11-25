@@ -81,3 +81,8 @@ If you'd like to contribute to the project, feel free to fork the repository, ma
 
 If you encounter any issues or have suggestions for new features, please open an issue on the GitHub repository.
 
+## License
+
+![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE.txt) file for details.
