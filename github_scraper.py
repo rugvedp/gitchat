@@ -1,6 +1,7 @@
 import os
 import requests
 import shutil
+import time
 
 # Function to download file content
 def download_file(file_url, local_path, github_token=None):
@@ -40,6 +41,9 @@ def fetch_contents(url, folder_path, github_token=None):
                     ".gitattributes", ".gitignore", ".LICENSE",  # Git and license files
                     ".exe", ".bat", ".sh", ".jar",  # Executable and script files
                     ".psd", ".ai", ".svg",  # Design and vector files
+                    ".db", ".sql", ".sqlite",  # Database and SQL files
+                    ".json", ".yaml", ".yml", ".csv",  # Data files
+
                 )):
                     pass
                 else:
@@ -76,4 +80,5 @@ def scrape_github_repo(repo_url, download_folder, github_token):
 
     print(f"Starting to scrape repository: {repo_url}")
     fetch_contents(repo_api_url, download_folder, github_token)
+    time.sleep(5)
     return f"Files from {repo_url} downloaded successfully to {download_folder}!"
