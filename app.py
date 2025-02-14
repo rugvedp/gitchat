@@ -17,9 +17,8 @@ github = st.secrets["GITHUB"]
 
 # LLM configuration
 llm = ChatGroq(
-    model="llama3-70b-8192",
+    model="llama-3.3-70b-versatile",
     temperature=0,
-    max_tokens=None,
     timeout=None,
     max_retries=2,
     api_key=groq
